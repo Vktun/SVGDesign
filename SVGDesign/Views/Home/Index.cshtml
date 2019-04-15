@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "SVGDesign";
+}
+@Styles.Render("~/content/jquerycss")
+@Scripts.Render("~/bundles/svg")
+
+<style>
+    .border-show {
+        border: 1px solid black;
+    }
+
+    .toolbar-vertical {
+        width: 100px;
+        height: 100%;
+    }
+
+    .img-btn {
+        width: 80px;
+        height: 30px;
+        border: 1px solid #ccc;
+    }
+
+    .toolbar-vertical {
+        border-right: 1px solid #ccc;
+        text-align: center;
+    }
+</style>
+<div class="row" style="margin-top:20px;">
+    <div class="col-lg-2 border-show ">
+        设备
+        线路
+    </div>
+    <div class="col-lg-10">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="row border-show">
+                    <div class="pull-left toolbar-vertical">
+                        <div>
+                            道路图形
+                        </div>
+                        <hr />
+                        <div id="roadline" class="drag-el" data-type="1">
+                            <img src="~/Content/images/roadline.png" />
+                        </div>
+                        <hr />
+                        <div id="dirction" class="drag-el" data-type="2">
+                            <img src="~/Content/images/dirction.png" />
+                        </div>
+                        <hr />
+                        <div id="text" class="drag-el" data-type="3">
+                            <i class="glyphicon glyphicon-text-size"></i>文本
+                        </div>
+                    </div>
+                    <div id="drawing" class="text-center"></div>
+                </div>
+            </div>
+            <div class="col-lg-2 border-show">
+                属性
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        unselect()
+        dragEl();
+       
+    })
+    var drawing = new SVG('drawing').size(500, 500);
+    drawing.rect(500, 500)
+    var group = drawing.group().addClass('road-group');
+
+    function unselect() {
+        $(document).on("click", function (e) {
+            $('#drawing g.road-group .road-element').each(function () {
+                this.instance.selectize(false)
+            })
+            if ($(e.target).hasClass("road-element")) {
+                var curId = $(e.target).attr("id");
+                var el = SVG.get('#' + curId);
+                if (group.index(el) > -1) {
+                    el.selectize(true)
+
+                }
+            }
+        })
+    }
+    function dragEl() {
+        $(".drag-el").draggable({
+            helper: "clone",
+            cursor: "cosshair",
+            classes: {
+                "ui-draggable": "highlight"
+            },
+            stop: function (event, ui) {
+                console.log(event)
+                var elCoord = {};
+                elCoord.x = event.pageX;
+                elCoord.y = event.pageY;
+                var coord = getCoordinate(elCoord);
+                var type = $(event.target).attr("data-type") * 1;
+                createElement(coord, type);
+            }
+        })
+    }
+    function getCoordinate(elCoord) {
+        var svgObj = $("#drawing>svg");
+        var svgCoord = {};
+        svgCoord.x = svgObj.offset().left;
+        svgCoord.y = svgObj.offset().top;
+        var coord = {};
+        coord.x = elCoord.x - svgCoord.x;
+        coord.y = elCoord.y - svgCoord.y;
+        coord.x = coord.x > 0 ? coord.x : 0;
+        coord.y = coord.y > 0 ? coord.y : 0;
+
+        return coord;
+    }
+    function createElement(coord, type) {
+        var obj;
+        switch (type) {
+            case 1://矩形
+                obj = group.rect(240, 20);
+                break;
+            case 2://方向
+                obj = group.polygon('350,10 365,40 350,30 335,40');
+                break;
+            case 3://文本
+                obj = group.text("文本");
+                break
+        }
+        if (!obj)
+            return;
+        obj.fill('lime').addClass('road-element').draggable().selectize().resize();
+        obj.move(coord.x, coord.y);
+    }
+</script>
+@Scripts.Render("~/bundles/jqueryui")
