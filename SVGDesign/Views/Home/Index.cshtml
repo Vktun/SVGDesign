@@ -3,351 +3,99 @@
 }
 @Styles.Render("~/content/jquerycss")
 @Scripts.Render("~/bundles/svg")
-
 <style>
     .border-show {
         border: 1px solid black;
     }
 
-    .toolbar-vertical {
-        width: 100px;
-        height: 100%;
+    .decresPadding {
+        margin: 10px 1px 0px 1px;
     }
 
-    .img-btn {
-        width: 80px;
-        height: 30px;
-        border: 1px solid #ccc;
-    }
+        .decresPadding .col-xs-3 {
+            padding-left: 1px;
+            padding-right: 1px;
+        }
 
-    .toolbar-vertical {
-        border-right: 1px solid #ccc;
-        text-align: center;
+        .decresPadding .thumbnail {
+            margin-bottom: 5px;
+            width:50px;
+            height:50px;
+        }
+    .toolbar-v{
+        width:100%;
+        height:40px;
     }
 </style>
 <div class="row" style="margin-top:20px;">
     <div class="col-lg-2 border-show ">
-        <div class="list-group" id="ledlist">
+        <div class="list-group">
+            <a role="button" class="list-group-item" data-name="Common" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                公共组件
+            </a>
+            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                
+            </div>
+            <a role="button" class="list-group-item" data-name="AirCondition" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                空调机房
+            </a>
+            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+               
+            </div>
+            <a role="button" class="list-group-item" data-name="Factory" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                机械制造车间
+            </a>
+            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+              
+            </div>
+            <a role="button" class="list-group-item" data-name="Electricity" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                电力设备
+            </a>
+            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+               
+            </div>
         </div>
     </div>
-    <div class="col-lg-10">
-        <div class="row">
-            <div class="col-lg-10">
-                <div class="row border-show">
-                    <div class="pull-left toolbar-vertical">
-                        <div>
-                            道路图形
-                        </div>
-                        <hr />
-                        <div id="roadline" class="drag-el" data-type="1">
-                            <img src="~/Content/images/roadline.png" />
-                        </div>
-                        <hr />
-                        <div id="dirction" class="drag-el" data-type="2">
-                            <img src="~/Content/images/dirction.png" />
-                        </div>
-                        <hr />
-                        <div id="text" class="drag-el" data-type="3">
-                            <i class="glyphicon glyphicon-text-size"></i>文本
-                        </div>
-                    </div>
-                    <div id="drawing" class="text-center"></div>
-                </div>
-            </div>
-            <div class="col-lg-2 border-show">
-                <div class="row">
-                    <h5>大屏信息</h5>
-                    <input type="hidden" id="ledId" />
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">中心位置</span>
-                        <input type="text" class="form-control" name="centerX" placeholder="x" value="">
-                        <input type="text" class="form-control" name="centerY" placeholder="y" value="">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">路况范围</span>
-                        <input type="text" class="form-control" placeholder="1-1000m" value="1000m">
-                    </div>
-                    <h5>道路样式</h5>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">标识</span>
-                        <input type="text" class="form-control road-el-attr" name="id" readonly placeholder="唯一标识Id">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">颜色</span>
-                        <input type="text" class="form-control  road-el-attr" name="fill" placeholder="文本显示的颜色">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">高度</span>
-                        <input type="text" class="form-control  road-el-attr" name="height" placeholder="高度">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">宽度</span>
-                        <input type="text" class="form-control  road-el-attr" name="width" placeholder="宽度">
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">显示</span>
-                        <input type="text" class="form-control  road-el-attr" name="view" readonly placeholder="要显示的内容">
-                    </div>
-                    <a href="#" class="btn btn-info btn-xs" onclick="trans()" title="旋转">
-                        <i class="glyphicon glyphicon-repeat" aria-hidden="true"></i>
-                    </a>
-                    <a href="#" class="btn btn-info btn-xs" onclick="delel()" title="删除">
-                        <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
-                    </a>
-                    <a href="#" class="btn btn-info btn-sm" onclick="saveStyle()">
-                        <i class="glyphicon glyphicon-ok" aria-hidden="true"></i>应用
-                    </a>
-                    <h5>数据<br><small>设置时先获取周围可查询路况的名字</small></h5>
-
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">路名</span>
-                        <a href="#" class="btn btn-default btn-sm" onclick="getRoadline()">
-                            <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>获取
-                        </a>
-                        <select class="form-control  road-el-attr" id="roadList">
-                            <option>获取到的道路</option>
-                        </select>
-                    </div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon">方向</span>
-                        <select class="form-control  road-el-attr" id="roadDirc">
-                            <option value="南向北">南向北</option>
-                            <option value="北向东">北向东</option>
-                            <option value="东向西">东向西</option>
-                            <option value="西向东">西向东</option>
-                        </select>
-                    </div>
-                    <a href="#" class="btn btn-info btn-sm" onclick="saveRoadLine()">
-                        <i class="glyphicon glyphicon-ok" aria-hidden="true" ></i>绑定
-                    </a>
-                    <a href="#" class="btn btn-primary btn-sm pull-right" onclick="saveTemplate()">
-                        <i class="glyphicon glyphicon-save" aria-hidden="true"></i>保存
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-10 border-show ">
+        <div class="row toolbar-v"></div>
+        <div id="drawing" style="min-height:600px;" class="row"></div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
-        getLEDs()
-        unselect()
-        dragEl();
+        $("[data-toggle='collapse']").click(function (ev) {
+            var el = ev.target;
+            var name = $(el).attr("data-name");
+            if ($(el).attr("aria-expanded") == "false") {
+                $.getJSON("/Components/GetComponents", { parentName: name }, function (res) {
+                    var list = "<div class='row decresPadding'>";
+                    if (res.length > 0) {
+                        
+                        for (var i = 0, len = res.length; i < len; i++) {
 
-    })
-    var drawing = new SVG('drawing').size(384, 288);
-    var ledRect = drawing.rect(384, 288).addClass("led")
-    var group = drawing.group().addClass('road-group');
-    var currObj;
-    function unselect() {
-        $(document).on("click", function (e) {
-            $('#drawing g.road-group .road-element').each(function () {
-                this.instance.selectize(false)
-            })
-            if ($(e.target).hasClass("road-element")) {
-                var curId = $(e.target).attr("id");
-                var el = SVG.get('#' + curId);
-                if (group.index(el) > -1) {
-                    el.selectize(true)
-
-                }
-            }
-        })
-    }
-    function dragEl() {
-        $(".drag-el").draggable({
-            helper: "clone",
-            cursor: "cosshair",
-            classes: {
-                "ui-draggable": "highlight"
-            },
-            stop: function (event, ui) {
-                var elCoord = {};
-                elCoord.x = event.pageX;
-                elCoord.y = event.pageY;
-                var coord = getCoordinate(elCoord);
-                var type = $(event.target).attr("data-type") * 1;
-                createElement(coord, type);
-
-            }
-        })
-    }
-    function getCoordinate(elCoord) {
-        var svgObj = $("#drawing>svg");
-        var svgCoord = {};
-        svgCoord.x = svgObj.offset().left;
-        svgCoord.y = svgObj.offset().top;
-        var coord = {};
-        coord.x = elCoord.x - svgCoord.x - 10;
-        coord.y = elCoord.y - svgCoord.y - 10;
-        coord.x = coord.x > 0 ? coord.x : 0;
-        coord.y = coord.y > 0 ? coord.y : 0;
-
-        return coord;
-    }
-    function createElement(coord, type) {
-        var obj;
-        switch (type) {
-            case 1://矩形
-                obj = group.rect(240, 16).fill('lime');
-                break;
-            case 2://方向
-                obj = group.polygon('350,10 365,40 350,30 335,40').fill('lime');
-                break;
-            case 3://文本
-                obj = group.text("文本").fill('orange');
-                break
-        }
-        if (!obj)
-            return;
-        obj.data("type", type).addClass('road-element').draggable().selectize().resize();
-        obj.move(coord.x, coord.y);
-        obj.on("click", function (e) {
-            showElAttr(obj, type)
-        })
-        obj.on("dragend", function () {
-            showElAttr(obj, type)
-        })
-        obj.on("resizedone", function () {
-            showElAttr(obj, type)
-        })
-        showElAttr(obj, type)
-    }
-    function showElAttr(el, type) {
-        currObj = el;
-        $("input[name='id']").val(el.attr("id"))
-        $("input[name='fill']").val(el.attr("fill"))
-        $("input[name='width']").val(el.attr("width"))
-        $("input[name='height']").val(el.attr("height"))
-        $("input[name='view']").attr("readonly", "true")
-        if (type == 3) {
-            $("input[name='view']").val(el.text())
-            $("input[name='view']").removeAttr("readonly")
-        }
-        moveEl();
-    }
-
-    function saveStyle() {
-        if (group.has(currObj) && currObj.data("type") == 3) {
-            currObj.text($("input[name='view']").val())
-        }
-    }
-
-    function trans() {
-        if (group.has(currObj)) {
-            currObj.transform({ rotation: 90 })
-        }
-    }
-    function delel() {
-        if (group.has(currObj)) {
-            currObj.selectize(false).remove()
-        }
-    }
-    function moveEl() {
-        if (group.has(currObj)) {
-            document.addEventListener("keydown", function (ev) {
-                var ev = ev || window.event
-                switch (ev.keyCode) {
-                    case 37:
-                    case 100://左
-                        currObj.dx(-1)
-                        break;
-                    case 38:
-                    case 104://上
-                        currObj.dy(-1)
-                        break;
-                    case 39:
-                    case 102://右
-                        currObj.dx(1)
-                        break;
-                    case 40:
-                    case 98://下
-                        currObj.dy(1)
-                        break;
-                }
-            })
-        }
-    }
-    function getRoadline() {
-        var x = $("input[name='centerX']").val(), y = $("input[name='centerY']").val();
-        if (!x && !y) {
-            alert("请设置中心坐标点")
-        }
-        $.ajax({
-            url: "/BaiduMap/GetTrafficLines",
-            data: { Center: y + "," + x, Radius: 1000 },
-            dataType: "json",
-            success: function (res) {
-                if (res.status == 0) {
-                    if (res.road_traffic && res.road_traffic.length > 0) {
-                        var opt = "";
-                        for (var i = 0, len = res.road_traffic.length; i < len; i++) {
-                            var name = res.road_traffic[i].road_name;
-                            opt += "<option value=" + name + ">" + name + "</option>"
+                            list += getTemlate(res[i].url, res[i].name)
                         }
-                        $("#roadList").html(opt);
+                        list += "</div>";
                     }
-                } else {
-                    alert(res.message)
-                }
+                    var id = $(el).attr("href");
+                    $(id).html(list)
+                })
             }
         })
-    }
-
-    function saveRoadLine() {
-        if (group.has(currObj) && currObj.data("type") == 1) {
-            currObj.data("roadname", $("#roadList").val(), true)
-            currObj.data("roaddirc", $("#roadDirc").val(), true)
-
-        } else {
-            alert("请选择道路再进行绑定")
-        }
-    }
-
-    function saveTemplate() {
-        $('#drawing g.road-group .road-element').each(function () {
-            this.instance.selectize(false)
-        })
-        var a = drawing.svg()
-        $.ajax({
-            url: "/BaiduMap/SaveTemplate",
-            type: "post",
-            contentType: 'application/json;charset=utf-8',
-            data: JSON.stringify({ ledId: $("#ledId").val(),contents: a }),
-            success: function () {
-
-            }
-        })
-    }
-    function getLEDs() {
-        $.getJSON("/BaiduMap/GetLEDs", function (res) {
-            if (res && res.LED) {
-                var obj = res.LED;
-                var list = "";
-                for (var i = 0, len = obj.length; i < len; i++) {
-                    list += getA(obj[i])
-                }
-                $("#ledlist").html(list)
-            }
-        })
-    }
-    function getA(obj) {
-        return "<a href=\"#\" class=\"list-group-item\" onclick=\"ledfunc(this)\" data-id=" + obj.id
-            + " data-x=" + obj.x + " data-y=" + obj.y + ">" + obj.name + "</a>";
-    }
-
-    function ledfunc(e) {
         
-        ledRect.data({
-            id: $(e).attr("data-id"),
-            name: $(e).html(),
-            x: $(e).attr("data-x"),
-            y: $(e).attr("data-y"),
-            radius:1000
-        })
-        $("input[name='centerX']").val($(e).attr("data-x"))
-        $("input[name='centerY']").val($(e).attr("data-y"))
-        $("#ledId").val($(e).attr("data-id"))
+    })
+
+    function getTemlate(url, name) {
+        var contents = "<div class='col-xs-3'>" +
+            "<embed  src='" + url + "' alt=" + name + " class='thumbnail' >" +
+            " </div>";
+        return contents;
     }
+    var drawing = new SVG('drawing').size('100%', '100%');
+
+    var group = drawing.group().addClass('road-group');
 </script>
+
+
 @Scripts.Render("~/bundles/jqueryui")

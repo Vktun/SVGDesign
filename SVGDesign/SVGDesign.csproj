@@ -124,6 +124,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaiduMapController.cs" />
+    <Compile Include="Controllers\ComponentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -131,6 +132,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Component\Common\gaojing.svg" />
+    <Content Include="Component\Common\gaojingkongxin.svg" />
+    <Content Include="Component\Common\gaojing_1.svg" />
+    <Content Include="Component\Common\shengyinjingyin.svg" />
+    <Content Include="Component\Common\shengyinkai.svg" />
+    <Content Include="Component\Common\shengyinwu.svg" />
+    <Content Include="Component\Common\shengyin_shiti.svg" />
+    <Content Include="Component\Common\shexiangtou_guanbi.svg" />
+    <Content Include="Component\Common\shexiangtou_shiti.svg" />
+    <Content Include="Component\Common\Wi-Fi.svg" />
+    <Content Include="Component\Common\zhinengxiaofangshuan.svg" />
+    <Content Include="Component\Electricity\dianbiao.svg" />
+    <Content Include="Component\Electricity\dianbiao_shiti.svg" />
+    <Content Include="Component\Electricity\ranqibiao_shiti.svg" />
+    <Content Include="Component\Electricity\shuibiao_shiti.svg" />
+    <Content Include="Component\Electricity\wuxiandianbo.svg" />
     <Content Include="Content\bootstrap\bootstrap-theme.css" />
     <Content Include="Content\bootstrap\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap\bootstrap.css" />
@@ -194,12 +211,15 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\BaiduMap\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Component\AirCondition\" />
+    <Folder Include="Component\Factory\" />
     <Folder Include="Models\" />
     <Folder Include="template\" />
-    <Folder Include="Views\BaiduMap\" />
+    <Folder Include="Views\Components\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />

@@ -22,7 +22,7 @@ namespace SVGDesign
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/jquery/bootstrap.js"));
+                      "~/Scripts/bootstrap/bootstrap.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/svg").Include(
                 "~/Scripts/svg/svg.js",

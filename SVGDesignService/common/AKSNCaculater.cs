@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
@@ -9,21 +10,35 @@ namespace SVGDesignService.common
     {
         private static string MD5(string password)
         {
-            byte[] textBytes = Encoding.UTF8.GetBytes(password);
+            //byte[] textBytes = Encoding.UTF8.GetBytes(password);
+            //try
+            //{
+            //    System.Security.Cryptography.MD5CryptoServiceProvider cryptHandler;
+            //    cryptHandler = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            //    byte[] hash = cryptHandler.ComputeHash(textBytes);
+            //    string ret = "";
+            //    foreach (byte a in hash)
+            //    {
+            //        ret += a.ToString("x2");
+            //    }
+            //    return ret;
+            //}
+            //catch
+            //{
+            //    throw;
+            //}
             try
             {
-                System.Security.Cryptography.MD5CryptoServiceProvider cryptHandler;
-                cryptHandler = new System.Security.Cryptography.MD5CryptoServiceProvider();
-                byte[] hash = cryptHandler.ComputeHash(textBytes);
-                string ret = "";
-                foreach (byte a in hash)
-                {
-                    ret += a.ToString("x2");
-                }
-                return ret;
+                System.Security.Cryptography.HashAlgorithm hash = System.Security.Cryptography.MD5.Create();
+                byte[] hash_out = hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+
+                var md5_str = BitConverter.ToString(hash_out).Replace("-", "");
+                return md5_str.ToLower();
+
             }
             catch
             {
+
                 throw;
             }
         }
@@ -50,7 +65,7 @@ namespace SVGDesignService.common
             {
                 sb.Append(UrlEncode(item.Key));
                 sb.Append("=");
-                sb.Append(UrlEncode(item.Value));
+                sb.Append(item.Value);//坑爹的百度，这个破sdk这地方 逗号 编码之后 traffic 路况的sn总是校验失败
                 sb.Append("&");
             }
             sb.Remove(sb.Length - 1, 1);

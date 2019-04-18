@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SVGDesignService.model
+﻿namespace SVGDesignService.model
 {
     public static class BaiduMapRoad
     {
@@ -8,15 +6,23 @@ namespace SVGDesignService.model
         {
             get
             {
-                return "IGXqb5bsEELcffTCB4UGPb19fLBVmaqY";
+                return "";
             }
         }
 
         public static string SK { get { return "XFSa4dk1SndC5oXFYBxOnUDkdwDFBzBf"; } }
 
-        public static string Url { get { return "http://api.map.baidu.com/traffic/v1/around"; } }
+        public static string Url
+        {
+            get { return "http://api.map.baidu.com/traffic/v1/around"; }
+            //get { return "http://api.map.baidu.com/location/ip"; }
+        }
+        public static string Path
+        {
+            get { return "/traffic/v1/around"; }
+            //get { return "/location/ip"; }
+        }
 
-       
     }
     public class TrafficAround
     {
@@ -26,9 +32,9 @@ namespace SVGDesignService.model
 
         public int Road_grade { get; set; }
 
-        public string coord_type_input { get; set; }
+        //public string Coord_type_input { get; set; } = "bd09ll";
 
-        public string Coord_type_output { get; set; }
+        //public string Coord_type_output { get; set; } = "bd09ll";
 
         public string Sn { get; set; }
     }

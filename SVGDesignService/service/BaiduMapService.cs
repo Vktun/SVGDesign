@@ -19,6 +19,7 @@ namespace SVGDesignService
         private string GetSN(TrafficAround trafficAround)
         {
             Dictionary<string, string> keyValues = new Dictionary<string, string>();
+           
             foreach (PropertyInfo pro in typeof(TrafficAround).GetProperties())
             {
                 string value = pro.GetValue(trafficAround, null)?.ToString();
@@ -27,24 +28,30 @@ namespace SVGDesignService
                 if (name == "sn") continue;
                 keyValues.Add(name, value);
             }
+            //keyValues.Add("ip", "39.91.109.120");
             keyValues.Add("ak", BaiduMapRoad.AK);
-            return  AKSNCaculater.CaculateAKSN(BaiduMapRoad.SK, BaiduMapRoad.Url, keyValues);
+
+            return  AKSNCaculater.CaculateAKSN(BaiduMapRoad.SK, BaiduMapRoad.Path, keyValues);
         }
 
         public TrafficResult GetTrafficAroundUrl(TrafficAround trafficAround)
         {
-            Dictionary<string, string> keyValues = new Dictionary<string, string>();
-            keyValues.Add("ak", BaiduMapRoad.AK);
+            Dictionary<string, string> kv = new Dictionary<string, string>();
+            //kv.Add("ip", "39.91.109.120");
+            
             foreach (PropertyInfo pro in typeof(TrafficAround).GetProperties())
             {
                 string value = pro.GetValue(trafficAround, null)?.ToString();
                 string name = pro.Name.ToLower();
                 if (string.IsNullOrEmpty(value)) continue;
                 if (name == "sn") continue;
-                keyValues.Add(name, value);
+                kv.Add(name, value);
             }
-            string queryparams = keyValues.GetQueryString();
-            var url = BaiduMapRoad.Url + "?" + queryparams;
+            kv.Add("ak", BaiduMapRoad.AK);
+            var sn = GetSN(trafficAround);
+            string queryparams = kv.GetQueryString();
+            var url = BaiduMapRoad.Url + "?" + queryparams+"&sn="+sn;
+
             TrafficResult res =  HttpMethods.HttpGet<TrafficResult>(url,Encoding.UTF8);
             return res;
         }
