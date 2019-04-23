@@ -33,6 +33,7 @@ namespace SVGDesign
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap/bootstrap.css",
+                      "~/Content/font-awesome/css/font-awesome.min.css",
                       "~/Content/svg/svg.select.css",
                       "~/Content/site.css"));
             bundles.Add(new StyleBundle("~/content/jquerycss").Include(
