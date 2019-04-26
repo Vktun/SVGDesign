@@ -3,27 +3,22 @@
 }
 @Styles.Render("~/content/jquerycss")
 @Scripts.Render("~/bundles/svg")
-<script src="~/Scripts/d3js/d3.v5.js"></script>
-@*<script src="~/Scripts/d3js/d3-drag.v1.min.js"></script>*@
 <style>
     .border-show {
         border: 1px solid black;
     }
 
-    .svg-element {
-        margin: 10px 1px 0px 1px;
+    .svg-element .col-xs-3 {
+        padding: 5px;
     }
 
-        .svg-element .col-xs-3 {
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-
-        .svg-element .thumbnail {
-            margin-bottom: 0px;
-            width: 40px;
-            height: 40px;
-        }
+    .svg-element .thumbnail {
+        margin-bottom: 0px;
+        width: 40px;
+        height: 40px;
+        position: relative;
+        z-index: -1;
+    }
 
     .toolbar-v {
         width: 100%;
@@ -40,41 +35,29 @@
         width: 0px;
         height: 0px;
     }
+
+    .thumbnail-higher {
+        position: relative;
+        z-index: 100;
+    }
+
+    .svg-element .active {
+        background-color: bisque;
+        filter: alpha(opacity:50);
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        -khtml-opacity: 0.5;
+    }
+
+    .el-component {
+        width: 100px;
+        height: 100px;
+    }
 </style>
 <div class="row" style="margin-top:20px;">
-    <div class="col-lg-2 border-show ">
-        <div class="list-group">
-            <a role="button" class="list-group-item" data-name="Common" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapse1">
-                公共组件
-            </a>
-            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
-                <div class='row svg-element'>
-                </div>
-            </div>
-            <a role="button" class="list-group-item" data-name="AirCondition" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                空调机房
-            </a>
-            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
-                <div class='row svg-element'>
-                </div>
-            </div>
-            <a role="button" class="list-group-item" data-name="Factory" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                机械制造车间
-            </a>
-            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
-                <div class='row svg-element'>
-                </div>
-            </div>
-            <a role="button" class="list-group-item" data-name="Electricity" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
-                电力设备
-            </a>
-            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
-                <div class='row svg-element'>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-2 border-show svg-element" id="libs">
     </div>
-    <div class="col-lg-10 border-show ">
+    <div class="col-lg-8">
         <div class="row toolbar-v">
             <div class="col-lg-4">
                 <a href="#" class="btn btn-info btn-xs" onclick="trans()" title="旋转">
@@ -86,53 +69,61 @@
             </div>
             <div class="col-lg-8"></div>
         </div>
-        <div id="drawing" style="min-height:600px;" class="row"></div>
+        <div id="drawing" style="min-height:500px;" class="row"></div>
+    </div>
+    <div class="col-lg-2 border-show pull-right" id="attr">
+        <div class="row">
+            <h5>属性</h5>
+            <input type="hidden" id="ledId" />
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">位置</span>
+                <input type="text" class="form-control" name="centerX" placeholder="x" value="">
+                <input type="text" class="form-control" name="centerY" placeholder="y" value="">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">宽度</span>
+                <input type="text" class="form-control" placeholder="" value="">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">高度</span>
+                <input type="text" class="form-control" placeholder="" value="">
+            </div>
+        </div>
     </div>
 </div>
-
-<div id="icons" class="hidden">
-
-</div>
-
 <script>
-
-
+    var h = (document.body.clientHeight), w = (document.body.clientWidth * 0.66) - 30;
+    var tempSVG = "";
     $(document).ready(function () {
-
-        $("[data-toggle='collapse']").each(function (index, el) {
-            var name = $(el).attr("data-name");
-            $.getJSON("/Components/GetComponents", { parentName: name }, function (res) {
-                var id = $(el).attr("href");
-                var list = "<div class='row '>";
-                if (res.length > 0) {
-                    for (var i = 0, len = res.length; i < len; i++) {
-                        list += getTemlate(res[i].url, res[i].name)
-                    }
+        w = (document.body.clientWidth * 0.66) - 30;
+        h = (document.body.clientHeight);
+        $.getJSON("/Components/GetComponents", { parentName: 'Common' }, function (res) {
+            var list = "";
+            if (res.length > 0) {
+                for (var i = 0, len = res.length; i < len; i++) {
+                    list += getTemlate(res[i].url, res[i].name)
                 }
-                $(id).html(list)
-            })
-            dragEl()
+            }
+            $("#libs").html(list)
         })
     })
-
-
     function getTemlate(url, name) {
-        var contents = "<div class='col-xs-3  drag-el'>" +
-            "<embed  src='" + url + "' title=" + name + " class='thumbnail' >" +
-            //"<embed src='" + url + "'  class='svgSource' >" +
-            " </div>";
+        var contents = "<div class='col-xs-3  drag-el'><a href='#' onclick='drawThis(this)' class='thumbnail-higher'>" +
+            "<embed  src='" + url + "' class='thumbnail'>" +
+            "</a></div>";
         return contents;
     }
-    var drawing = new SVG('drawing').size(990, 540).addClass("svg-background");
-    var gridLayout = drawing.rect(1000, 540).fill("#e8e8e8")
-    var group = drawing.group().addClass('road-group');
+    var drawing = new SVG('drawing').size(w, h).addClass("svg-background");
+    drawing.on('click', svgClick)
+    var gridLayout = drawing.rect(w, h).fill("#e8e8e8");
+    var group = drawing.group().addClass('svg-group');
+    var symbol = drawing.symbol()
     var defs = drawing.defs();
     var pattern = defs.pattern(100, 100, function (add) {
         add.image("/Content/images/grid.png", 100, 100)
     }).attr("id", "gridPattern").data('show', true);
     function gridShow() {
         var pattern = SVG.get('#gridPattern');
-        console.log(pattern.data('show'))
         if (pattern.data('show')) {
             gridLayout.fill("url(#gridPattern)")
 
@@ -147,50 +138,42 @@
         $(document).on("click", function (e) {
             $('#drawing  .svg-desgin-element').each(function () {
                 this.instance.selectize(false)
+                this.instance.removeClass('selected')
             })
             if ($(e.target).hasClass("svg-desgin-element")) {
                 var curId = $(e.target).attr("id");
                 var el = SVG.get('#' + curId);
                 if (group.index(el) > -1) {
                     el.selectize(true)
-
+                    this.instance.addClass('selected')
                 }
             }
         })
     }
+    function drawThis(el) {
+        tempSVG = "";
+        $(".svg-element .drag-el").each(function (i, el) {
+            if ($(el).hasClass('active'))
+                $(el).removeClass('active')
+        })
+        $(el).parent().addClass('active')
+        var svgDoc = el.firstChild.getSVGDocument();
+        //获取到当前svg 开始画
 
-    function dragEl() {
+        var svg = svgDoc.children[0];
+        if (svg) {
+            tempSVG = svg.innerHTML;
+            // console.log( svg.children[0].outerHTML)
+        }
+    }
 
-        //var circle = d3.selectAll(".drag-el").classed("dragging", true)
-        //    .call(d3.drag().
-        //        on("drag", dragged).on("end", ended));
-        console.log($("svg"))
-        $(document).on("click", ".svg-element .drag-el", function (e) {
-
-
-        });
-
-        //$(document).on("draggable", ".svg-element .drag-el img", function (e) {
-        //    console.log("----")
-        //})
-        //$(".svg-element .drag-el img").draggable({
-        //    helper: "clone",
-        //    cursor: "cosshair",
-        //    classes: {
-        //        "ui-draggable": "highlight"
-        //    },
-        //    stop: function (event, ui) {
-        //        console.log("hello")
-        //        var elCoord = {};
-        //        elCoord.x = event.pageX;
-        //        elCoord.y = event.pageY;
-        //        var coord = getCoordinate(elCoord);
-        //        createElement(coord, event.target);
-        //    }
-        //})
-        //$(".svg-element .drag-el").on("click", function () {
-        //    console.log("hello")
-        //})
+    function svgClick(e) {
+        if (tempSVG) {
+            var elc = getCoordinate({ x: e.x, y: e.y });
+            createElement(elc);
+        } else {
+            unselect()
+        }
     }
     function getCoordinate(elCoord) {
         var svgObj = $("#drawing>svg");
@@ -202,15 +185,26 @@
         coord.y = elCoord.y - svgCoord.y - 10;
         coord.x = coord.x > 0 ? coord.x : 0;
         coord.y = coord.y > 0 ? coord.y : 0;
-
         return coord;
     }
-    function createElement(coord, type) {
-        console.log(type)
-        drawing.svg("\Component\Common\gaojing_1.svg")
+    function createElement(coord) {
+        var obj = group.svg(tempSVG);
+        var el = null;
+        group.each(function (i, children) {
+            var _this = this;
+
+            if (!_this.hasClass("el-component")) {
+                _this.addClass("el-component").addClass("svg-desgin-element")
+                    .size(100, 100).move(coord.x, coord.y)
+                    .draggable().selectize().resize()
+
+            }
+
+        })
+        tempSVG = null;
     }
 
 </script>
 
-
+<script src="~/Scripts/svg-attr/svg.attr.js"></script>
 @Scripts.Render("~/bundles/jqueryui")

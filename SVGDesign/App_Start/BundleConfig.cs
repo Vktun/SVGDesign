@@ -27,7 +27,7 @@ namespace SVGDesign
             bundles.Add(new ScriptBundle("~/bundles/svg").Include(
                 "~/Scripts/svg/svg.js",
                 "~/Scripts/svg/svg.draggable.js",
-                "~/Script/svg/svg.panzoom.js",
+                "~/Scripts/svg/svg.panzoom.js",
                 "~/Scripts/svg/svg.select.js",
                 "~/Scripts/svg/svg.resize.js"));
 

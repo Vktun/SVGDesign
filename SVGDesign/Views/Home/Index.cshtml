@@ -48,11 +48,14 @@
         -moz-opacity: 0.5;
         -khtml-opacity: 0.5;
     }
+
+    .el-component {
+        width: 100px;
+        height: 100px;
+    }
 </style>
-<div class="row" style="margin-top:20px;">
-    <div class="col-lg-2 border-show svg-element" id="libs">
-    </div>
-    <div class="col-lg-8">
+<div style="margin-top:20px;">
+    <div class="col-lg-10">
         <div class="row toolbar-v">
             <div class="col-lg-4">
                 <a href="#" class="btn btn-info btn-xs" onclick="trans()" title="旋转">
@@ -87,72 +90,49 @@
     </div>
 </div>
 <script>
-    var h = (document.body.clientHeight), w = (document.body.clientWidth * 0.66)-30;
+    var h = (document.body.clientHeight), w = (document.body.clientWidth * 0.82) - 30;
+    var tempSVG = "";
+
+    var drawing = new SVG('drawing').size(w, h).addClass("svg-background")
+        .panZoom({ zoomMin: 0.1, zoomMax: 10 });
+    drawing.zoom(0.4, { x: w/3, y: h/3 })
     $(document).ready(function () {
-        w = (document.body.clientWidth * 0.66)-30;
+        w = (document.body.clientWidth * 0.82) - 30;
         h = (document.body.clientHeight);
-        $.getJSON("/Components/GetComponents", { parentName: 'Common' }, function (res) {
-            var list = "";
-            if (res.length > 0) {
-                for (var i = 0, len = res.length; i < len; i++) {
-                    list += getTemlate(res[i].url, res[i].name)
-                }
-            }
-            $("#libs").html(list)
+        $.get("/Template/GetProject", { projectName: "aircondition" }, function (res) {
+            drawing.svg(res);
+            //drawing.each(function (i, children) {
+            //    if (children[i].parent()) {
+            //        //children[i].selectize().draggable().resize()
+            //        children[i].selectize()
+            //    }
+            //}, true);
         })
     })
-
-
-    function getTemlate(url, name) {
-        var contents = "<div class='col-xs-3  drag-el'><a href='#' onclick='drawThis(this)' class='thumbnail-higher'>" +
-            "<embed  src='" + url + "' class='thumbnail'>" +
-            //"<embed src='" + url + "'  class='svgSource' >" +
-            "</a></div>";
-        return contents;
-    }
-    var drawing = new SVG('drawing').size(w, h).addClass("svg-background");
-    var gridLayout = drawing.rect(w, h).fill("#e8e8e8")
-    var group = drawing.group().addClass('road-group');
-    var defs = drawing.defs();
-    var pattern = defs.pattern(100, 100, function (add) {
-        add.image("/Content/images/grid.png", 100, 100)
-    }).attr("id", "gridPattern").data('show', true);
-    function gridShow() {
-        var pattern = SVG.get('#gridPattern');
-        console.log(pattern.data('show'))
-        if (pattern.data('show')) {
-            gridLayout.fill("url(#gridPattern)")
-
-            pattern.data('show', false)
-        } else {
-            gridLayout.fill("#e8e8e8")
-            pattern.data('show', true)
-        }
-    }
 
     function unselect() {
         $(document).on("click", function (e) {
             $('#drawing  .svg-desgin-element').each(function () {
                 this.instance.selectize(false)
+                this.instance.removeClass('selected')
             })
             if ($(e.target).hasClass("svg-desgin-element")) {
                 var curId = $(e.target).attr("id");
                 var el = SVG.get('#' + curId);
                 if (group.index(el) > -1) {
                     el.selectize(true)
-
+                    this.instance.addClass('selected')
                 }
             }
         })
     }
-    function drawThis(el) {
-        $(".svg-element .drag-el").each(function (i, el) {
-            if ($(el).hasClass('active'))
-                $(el).removeClass('active')
-        })
-        $(el).parent().addClass('active')
-        var svg = el.firstChild.getSVGDocument();
-        //获取到当前svg 开始画
+    function svgClick(e) {
+        if (tempSVG) {
+            var elc = getCoordinate({ x: e.x, y: e.y });
+            createElement(elc);
+        } else {
+            unselect()
+        }
     }
     function getCoordinate(elCoord) {
         var svgObj = $("#drawing>svg");
@@ -164,15 +144,26 @@
         coord.y = elCoord.y - svgCoord.y - 10;
         coord.x = coord.x > 0 ? coord.x : 0;
         coord.y = coord.y > 0 ? coord.y : 0;
-
         return coord;
     }
-    function createElement(coord, type) {
-        console.log(type)
-        drawing.svg("\Component\Common\gaojing_1.svg")
+    function createElement(coord) {
+        var obj = group.svg(tempSVG);
+        var el = null;
+        group.each(function (i, children) {
+            var _this = this;
+
+            if (!_this.hasClass("el-component")) {
+                _this.addClass("el-component").addClass("svg-desgin-element")
+                    .size(100, 100).move(coord.x, coord.y)
+                    .draggable().selectize().resize()
+
+            }
+
+        })
+        tempSVG = null;
     }
 
 </script>
 
-
+<script src="~/Scripts/svg-attr/svg.attr.js"></script>
 @Scripts.Render("~/bundles/jqueryui")

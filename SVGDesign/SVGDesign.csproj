@@ -127,6 +127,7 @@
     <Compile Include="Controllers\ComponentsController.cs" />
     <Compile Include="Controllers\DiscardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TemplateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -158,6 +159,11 @@
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\dirction.png" />
     <Content Include="Content\images\grid.png" />
+    <Content Include="projects\aircondition\svgBg.jpg" />
+    <Content Include="projects\aircondition\aircondition.svg" />
+    <Content Include="projects\aircondition\banshihuanre.png" />
+    <Content Include="projects\aircondition\reshuixiang.png" />
+    <Content Include="projects\aircondition\yongchi.jpg" />
     <Content Include="Content\images\roadline.png" />
     <Content Include="Content\svg\svg.select.css" />
     <Content Include="favicon.ico" />
@@ -207,6 +213,7 @@
     <Content Include="Scripts\jquery\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\svg-attr\svg.attr.js" />
     <Content Include="Scripts\svg\svg.draggable.js" />
     <Content Include="Scripts\svg\svg.js" />
     <Content Include="Scripts\svg\svg.panzoom.js" />
@@ -236,6 +243,7 @@
     <Folder Include="Models\" />
     <Folder Include="template\" />
     <Folder Include="Views\Components\" />
+    <Folder Include="Views\Template\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
@@ -274,7 +282,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52177</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:52177/</IISUrl>
+          <IISUrl>http://localhost:52178/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
