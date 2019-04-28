@@ -72,7 +72,10 @@
     <div class="col-lg-2 border-show pull-right" id="attr">
         <div class="row">
             <h5>属性</h5>
-            <input type="hidden" id="ledId" />
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">元素Id</span>
+                <input type="text" class="form-control" name="Id" placeholder="id" value="">
+            </div>
             <div class="input-group input-group-sm">
                 <span class="input-group-addon">位置</span>
                 <input type="text" class="form-control" name="centerX" placeholder="x" value="">
@@ -86,6 +89,10 @@
                 <span class="input-group-addon">高度</span>
                 <input type="text" class="form-control" placeholder="" value="">
             </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">样式</span>
+                <input type="text" class="form-control" placeholder="cursor:pointer;fill:#f03;" value="">
+            </div>
         </div>
     </div>
 </div>
@@ -95,33 +102,36 @@
 
     var drawing = new SVG('drawing').size(w, h).addClass("svg-background")
         .panZoom({ zoomMin: 0.1, zoomMax: 10 });
-    drawing.zoom(0.4, { x: w/3, y: h/3 })
+    drawing.zoom(0.45, { x: 0, y: 0 })
     $(document).ready(function () {
         w = (document.body.clientWidth * 0.82) - 30;
         h = (document.body.clientHeight);
         $.get("/Template/GetProject", { projectName: "aircondition" }, function (res) {
             drawing.svg(res);
-            //drawing.each(function (i, children) {
-            //    if (children[i].parent()) {
-            //        //children[i].selectize().draggable().resize()
-            //        children[i].selectize()
-            //    }
-            //}, true);
+            drawing.each(function (i, children) {
+
+                if (children[i].parent() && children[i].hasClass("vk-el")) {
+                    //children[i].selectize().draggable().resize()
+                    children[i].selectize()
+                }
+            }, true);
+            unselect()
         })
     })
 
     function unselect() {
         $(document).on("click", function (e) {
-            $('#drawing  .svg-desgin-element').each(function () {
+            $('#drawing  .vk-el').each(function () {
                 this.instance.selectize(false)
                 this.instance.removeClass('selected')
             })
-            if ($(e.target).hasClass("svg-desgin-element")) {
+            if ($(e.target).hasClass("vk-el")) {
                 var curId = $(e.target).attr("id");
                 var el = SVG.get('#' + curId);
-                if (group.index(el) > -1) {
+                if (el) {
                     el.selectize(true)
-                    this.instance.addClass('selected')
+                    el.addClass('selected')
+                    componentsAttr.get(el)
                 }
             }
         })
@@ -153,7 +163,7 @@
             var _this = this;
 
             if (!_this.hasClass("el-component")) {
-                _this.addClass("el-component").addClass("svg-desgin-element")
+                _this.addClass("el-component").addClass("vk-el")
                     .size(100, 100).move(coord.x, coord.y)
                     .draggable().selectize().resize()
 
