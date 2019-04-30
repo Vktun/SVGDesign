@@ -6,33 +6,41 @@
         basic: {
 
         },
-        dataBasic: {
-
-        },
-        dataCustom: {
+        data: {
 
         }
     };
-    componentsAttr.get = function (svgEl) {
-
+    componentsAttr.get = function (svgEl, type) {
+        var res = "";
         if (svgEl && svgEl.attr()) {
             var a = svgEl.attr();
-            console.table(a)
-            for (var i = 0, len = a.length; i < len; i++) {
+            for (var key in a) {
+                console.log(key)
+                if (key.indexOf("data-") > -1) {
+                    if (key === "data-object") {
+                        res = type === 'html' ? getTpl(a[key]) : a[key] ;
+                        return res;
+                    }
 
-                //if (a[i].indexOf('data-') > -1) {
-                //    attrs.data[a[i].repalce("data-","")]=
-                //}
+                } else {
+                    $("input[name='" + key + "']").val(a[key]);
+                }
             }
         }
     };
 
-    function convert(input) {
-        return parseInt(input);
+    function getTpl(dataObj) {
+        var t = "";
+        if (dataObj) {
+            for (var key in dataObj) {
+                t += '<div class="input-group input-group-sm"><span class="input-group-addon">' + dataObj[key] + '</span >' +
+                    '<input type="text" class="form-control" placeholder="cursor:pointer;fill:#f03;" value="' + dataObj[key].value + '">' +
+                    '</div>';
+            }
+        }
+        return t;
     }
-    componentsAttr.add = function (a, b) {
-        return convert(a) + convert(b);
-    };
+
     window.componentsAttr = componentsAttr;
 })(window.componentsAttr || {}, SVG);
 

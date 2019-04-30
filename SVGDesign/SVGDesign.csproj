@@ -184,6 +184,7 @@
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.woff2" />
     <Content Include="Content\font-awesome\fonts\FontAwesome.otf" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-ui\AUTHORS.txt" />
     <Content Include="Scripts\jquery-ui\external\jquery\jquery.js" />
@@ -235,6 +236,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\BaiduMap\Index.cshtml" />
     <Content Include="Views\Discard\IconLibary.cshtml" />
+    <Content Include="Views\Discard\AddData.cshtml" />
+    <Content Include="Views\Shared\_Layout_Site.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

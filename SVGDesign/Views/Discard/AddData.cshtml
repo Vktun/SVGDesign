@@ -1,6 +1,5 @@
 ﻿@{
     ViewBag.Title = "SVGDesign";
-    Layout = "~/Views/Shared/_Layout_Site.cshtml";
 }
 @Styles.Render("~/content/jquerycss")
 @Scripts.Render("~/bundles/svg")
@@ -55,28 +54,61 @@
         height: 100px;
     }
 </style>
-<div>
-    <div class="row toolbar-v">
-        <div class="col-lg-4">
-            <a href="#" class="btn btn-info btn-xs" onclick="trans()" title="旋转">
-                <i class="glyphicon glyphicon-repeat" aria-hidden="true"></i>
-            </a>
-            <a href="#" class="btn btn-info btn-xs" onclick="gridShow()" title="显示/隐藏网格">
-                <i class="fa fa-th" aria-hidden="true"></i>
-            </a>
+<div style="margin-top:20px;">
+    <div class="col-lg-10">
+        <div class="row toolbar-v">
+            <div class="col-lg-4">
+                <a href="#" class="btn btn-info btn-xs" onclick="trans()" title="旋转">
+                    <i class="glyphicon glyphicon-repeat" aria-hidden="true"></i>
+                </a>
+                <a href="#" class="btn btn-info btn-xs" onclick="gridShow()" title="显示/隐藏网格">
+                    <i class="fa fa-th" aria-hidden="true"></i>
+                </a>
+            </div>
+            <div class="col-lg-8"></div>
         </div>
-        <div class="col-lg-8"></div>
+        <div id="drawing" style="min-height:500px;" class="row"></div>
     </div>
-    <div id="drawing" style="min-height:700px;" class="row"></div>
+    <div class="col-lg-2 border-show pull-right" id="attr">
+        <div class="row">
+            <h5>&nbsp;外观</h5>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">元素Id</span>
+                <input type="text" class="form-control" name="id" placeholder="id" value="">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">位置</span>
+                <input type="text" class="form-control" name="x" placeholder="x" value="">
+                <input type="text" class="form-control" name="y" placeholder="y" value="">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">宽度</span>
+                <input type="text" class="form-control" name="width" placeholder="" value="">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">高度</span>
+                <input type="text" class="form-control" name="height" placeholder="" value="">
+            </div>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">样式</span>
+                <input type="text" class="form-control" name="style" placeholder="cursor:pointer;fill:#f03;" value="">
+            </div>
+            <h5>&nbsp;数据</h5>
+            <div id="dataValue">
+
+            </div>
+        </div>
+    </div>
 </div>
 <script>
-    var h = (document.body.clientHeight), w = (document.body.clientWidth) - 30;
+    var h = (document.body.clientHeight), w = (document.body.clientWidth * 0.82) - 30;
     var tempSVG = "";
+
     var drawing = new SVG('drawing').size(w, h).addClass("svg-background")
         .panZoom({ zoomMin: 0.1, zoomMax: 10 });
-    drawing.zoom(0.6, { x: 0, y: 0 })
+    drawing.zoom(0.45, { x: 0, y: 0 })
     $(document).ready(function () {
-        w = (document.body.clientWidth) - 30;
+        w = (document.body.clientWidth * 0.82) - 30;
         h = (document.body.clientHeight);
         $.get("/Template/GetProject", { projectName: "aircondition" }, function (res) {
             drawing.svg(res);
@@ -86,11 +118,15 @@
                     //children[i].selectize().draggable().resize()
                     children[i].selectize()
                 }
-                if (children[i].hasClass("st60") ) {
-                    children[i].animate().dmove(9, 0).loop()
-                }
-                if (children[i].hasClass("st40") || children[i].hasClass("st69")) {
-                    children[i].animate().dmove(-25, 0).loop()
+                if (children[i].hasClass("st62")) {
+                    //children[i].animate().attr({ fill: '#f03' }).queue(function () {
+
+                    //    this.target().fill('#000')
+                    //    this.dequeue()
+
+                    //}).animate().rotate(180).skew(0,180).loop()
+
+                    children[i].animate().dmove(9,0).loop()
                 }
             }, true);
             unselect()
@@ -109,6 +145,7 @@
                 if (el) {
                     el.selectize(true)
                     el.addClass('selected')
+                    componentsAttr.get(el)
                 }
             }
         })

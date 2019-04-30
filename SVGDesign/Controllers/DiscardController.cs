@@ -17,5 +17,10 @@ namespace SVGDesign.Controllers
         {
             return View();
         }
+
+        public ActionResult AddData()
+        {
+            return View();
+        }
     }
 }

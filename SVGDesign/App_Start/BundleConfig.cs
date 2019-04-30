@@ -31,13 +31,17 @@ namespace SVGDesign
                 "~/Scripts/svg/svg.select.js",
                 "~/Scripts/svg/svg.resize.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
+            bundles.Add(new StyleBundle("~/Content/csslib").Include(
                       "~/Content/bootstrap/bootstrap.css",
                       "~/Content/font-awesome/css/font-awesome.min.css",
-                      "~/Content/svg/svg.select.css",
-                      "~/Content/site.css"));
+                      "~/Content/svg/svg.select.css"));
+
             bundles.Add(new StyleBundle("~/content/jquerycss").Include(
                       "~/Scripts/jquery-ui/jquery-ui.css"));
+
+            bundles.Add(new StyleBundle("~/Content/stylecss").Include(
+                      "~/Content/Site.css"));
+
 
 
         }
