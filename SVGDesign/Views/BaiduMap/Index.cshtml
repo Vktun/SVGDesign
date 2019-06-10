@@ -52,6 +52,10 @@
                         <div id="text" class="drag-el" data-type="3">
                             <i class="glyphicon glyphicon-text-size"></i>文本
                         </div>
+                        <hr />
+                        <div id="text" class="drag-el" data-type="4">
+                            <img src="~/Content/images/fivea.png" width="30" height="30" />
+                        </div>
                     </div>
                     <div id="drawing" class="text-center"></div>
                 </div>
@@ -114,7 +118,7 @@
                         <span class="input-group-addon">方向</span>
                         <select class="form-control  road-el-attr" id="roadDirc">
                             <option value="南向北">南向北</option>
-                            <option value="北向东">北向东</option>
+                            <option value="北向南">北向南</option>
                             <option value="东向西">东向西</option>
                             <option value="西向东">西向东</option>
                         </select>
@@ -135,7 +139,6 @@
         getLEDs()
         unselect()
         dragEl();
-
     })
     var drawing = new SVG('drawing').size(384, 288);
     var ledRect = drawing.rect(384, 288).addClass("led")
@@ -143,16 +146,20 @@
     var currObj;
     function unselect() {
         $(document).on("click", function (e) {
-            $('#drawing g.road-group .road-element').each(function () {
-                this.instance.selectize(false)
-            })
+            drawing.each(function (i, children) {
+                if (children[i].parent()) {
+                    children[i].selectize(false)
+                }
+
+            }, true)
             if ($(e.target).hasClass("road-element")) {
                 var curId = $(e.target).attr("id");
                 var el = SVG.get('#' + curId);
-                if (group.index(el) > -1) {
-                    el.selectize(true)
-
+                if (el) {
+                    el.selectize().resize()
                 }
+                currObj = el;
+                showElAttr(el, el.data("type"))
             }
         })
     }
@@ -197,22 +204,29 @@
                 obj = group.polygon('350,10 365,40 350,30 335,40').fill('lime');
                 break;
             case 3://文本
-                obj = group.text("文本").fill('orange');
-                break
+                obj = group.text("文本").fill('yellow').font({ size: 24, weight: 200 });
+                break;
+            case 4://五角星中心点
+                obj = group.path("M511.082606 89.707115 640.347668 381.582695 957.756785 415.585113 720.110293 628.727515 785.8526 941.099918 509.716492 780.939195 232.943888 940.007027 299.926442 627.883287 63.132364 413.8107 380.657114 381.064902 511.082606 89.707115Z")
+                    .size(30, 30).fill("#d81e06")
+                break;
         }
         if (!obj)
             return;
-        obj.data("type", type).addClass('road-element').draggable().selectize().resize();
-        obj.move(coord.x, coord.y);
+        obj.data("type", type).addClass('road-element').draggable().selectize().move(coord.x, coord.y);
+        if (type != 4) {
+            obj.resize();
+            obj.on("resizedone", function () {
+                showElAttr(obj, type)
+            })
+        }
         obj.on("click", function (e) {
             showElAttr(obj, type)
         })
         obj.on("dragend", function () {
             showElAttr(obj, type)
         })
-        obj.on("resizedone", function () {
-            showElAttr(obj, type)
-        })
+
         showElAttr(obj, type)
     }
     function showElAttr(el, type) {
@@ -232,6 +246,7 @@
     function saveStyle() {
         if (group.has(currObj) && currObj.data("type") == 3) {
             currObj.text($("input[name='view']").val())
+
         }
     }
 
@@ -242,6 +257,7 @@
     }
     function delel() {
         if (group.has(currObj)) {
+            console.log(currObj)
             currObj.selectize(false).remove()
         }
     }
@@ -252,19 +268,19 @@
                 switch (ev.keyCode) {
                     case 37:
                     case 100://左
-                        currObj.dx(-1)
+                        currObj.dx(-0.1)
                         break;
                     case 38:
                     case 104://上
-                        currObj.dy(-1)
+                        currObj.dy(-0.1)
                         break;
                     case 39:
                     case 102://右
-                        currObj.dx(1)
+                        currObj.dx(0.1)
                         break;
                     case 40:
                     case 98://下
-                        currObj.dy(1)
+                        currObj.dy(0.1)
                         break;
                 }
             })
@@ -308,17 +324,24 @@
     }
 
     function saveTemplate() {
-        $('#drawing g.road-group .road-element').each(function () {
-            this.instance.selectize(false)
-        })
-        var a = drawing.svg()
+        drawing.each(function (i, children) {
+            if (children[i].parent()) {
+                children[i].selectize(false)
+            }
+        }, true)
+        var r = drawing.svg().toString();
+        var rIndex = r.indexOf("xmlns")
+        if (rIndex < 10) {
+            r = r.replace(r.substring(rIndex, rIndex + 35), "")
+        }
+        var a = encodeURI(r)
         $.ajax({
             url: "/BaiduMap/SaveTemplate",
             type: "post",
             contentType: 'application/json;charset=utf-8',
-            data: JSON.stringify({ ledId: $("#ledId").val(),contents: a }),
-            success: function () {
-
+            data: JSON.stringify({ ledId: $("#ledId").val(), contents: a }),
+            success: function (res) {
+                alert(res)
             }
         })
     }
@@ -338,19 +361,42 @@
         return "<a href=\"#\" class=\"list-group-item\" onclick=\"ledfunc(this)\" data-id=" + obj.id
             + " data-x=" + obj.x + " data-y=" + obj.y + ">" + obj.name + "</a>";
     }
-
     function ledfunc(e) {
-
         ledRect.data({
             id: $(e).attr("data-id"),
             name: $(e).html(),
             x: $(e).attr("data-x"),
             y: $(e).attr("data-y"),
-            radius:1000
+            radius: 1000
         })
         $("input[name='centerX']").val($(e).attr("data-x"))
         $("input[name='centerY']").val($(e).attr("data-y"))
         $("#ledId").val($(e).attr("data-id"))
+        loadTemplate();
+    }
+
+    function loadTemplate() {
+        var ledId = $("#ledId").val();
+        if (ledId > 0) {
+            $.getJSON("/BaiduMap/GetTemplate", { ledId: ledId }, function (res) {
+                drawing.clear();
+                if (res && res.length > 10) {
+                    drawing.svg(res)
+                    group = drawing.select('g.road-group').members[0] || drawing.group().addClass('road-group')
+
+                } else {
+                    drawing.rect(384, 288).addClass("led")
+                    group = drawing.group().addClass('road-group');
+                }
+                drawing.each(function (i, children) {
+                    if (children[i].parent() && children[i].hasClass("road-element")) {
+                        children[i].selectize().draggable().resize()
+                    }
+
+                }, true);
+                unselect()
+            })
+        }
     }
 </script>
 @Scripts.Render("~/bundles/jqueryui")

@@ -54,6 +54,82 @@
         width: 100px;
         height: 100px;
     }
+
+    .st5 {
+        stroke-dasharray: 40;
+        animation: dash 5s linear infinite;
+    }
+
+    .st8, .st2 {
+        stroke-dasharray: 20;
+        animation: dash2 5s linear infinite;
+    }
+
+    .st86, .waterPumpAlarm {
+        animation: rectHeight 3s infinite linear;
+        -webkit-animation: rectHeight 3s infinite linear;
+        -moz-animation: rectHeight 3s infinite linear;
+        -ms-animation: rectHeight 3s infinite linear;
+    }
+
+    #bulb-body-fill {
+        -webkit-animation: bulb-on 1s ease infinite;
+        animation: bulb-on 1s ease infinite;
+    }
+
+    @@-webkit-keyframes bulb-on {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes bulb-on {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes dash {
+        to {
+            stroke-dashoffset: -400;
+        }
+    }
+
+    @@keyframes dash2 {
+        to {
+            stroke-dashoffset: 200;
+        }
+    }
+
+    @@keyframes rectHeight {
+        0% {
+            height: 0px;
+        }
+
+        25% {
+            height: 40px;
+        }
+
+        50% {
+            height: 85px;
+        }
+
+        75% {
+            height: 130px;
+        }
+
+        100% {
+            height: 170.918px;
+        }
+    }
 </style>
 <div>
     <div class="row toolbar-v">
@@ -82,16 +158,16 @@
             drawing.svg(res);
             drawing.each(function (i, children) {
 
-                if (children[i].parent() && children[i].hasClass("vk-el")) {
-                    //children[i].selectize().draggable().resize()
-                    children[i].selectize()
-                }
-                if (children[i].hasClass("st60") ) {
-                    children[i].animate().dmove(9, 0).loop()
-                }
-                if (children[i].hasClass("st40") || children[i].hasClass("st69")) {
-                    children[i].animate().dmove(-25, 0).loop()
-                }
+                //if (children[i].parent() && children[i].hasClass("vk-el")) {
+                //    //children[i].selectize().draggable().resize()
+                //    children[i].selectize()
+                //}
+                //if (children[i].hasClass("st60")) {
+                //    children[i].animate().dmove(9, 0).loop()
+                //}
+                //if (children[i].hasClass("st40") || children[i].hasClass("st69")) {
+                //    children[i].animate().dmove(-25, 0).loop()
+                //}
             }, true);
             unselect()
         })
@@ -151,6 +227,5 @@
     }
 
 </script>
-
 <script src="~/Scripts/svg-attr/svg.attr.js"></script>
 @Scripts.Render("~/bundles/jqueryui")
