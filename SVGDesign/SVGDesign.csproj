@@ -127,6 +127,7 @@
     <Compile Include="Controllers\ComponentsController.cs" />
     <Compile Include="Controllers\DiscardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImageDesignController.cs" />
     <Compile Include="Controllers\TemplateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -238,6 +239,7 @@
     <Content Include="Views\Discard\IconLibary.cshtml" />
     <Content Include="Views\Discard\AddData.cshtml" />
     <Content Include="Views\Shared\_Layout_Site.cshtml" />
+    <Content Include="Views\ImageDesign\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

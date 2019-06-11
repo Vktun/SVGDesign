@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@Scripts.Render("~/bundles/svg")
+
+<div class="col-xs-3">
+    <div>
+        <label class="drag-el">方块</label>
+    </div>
+</div>
+<div class="col-xs-9">
+
+    <div id="drawing">
+
+    </div>
+</div>
+<script type="text/javascript">
+    var w = document.body.offsetWidth,
+        h = document.body.offsetHeight
+    var drawing = new SVG('drawing').size(w, h);
+    var img = drawing.image("/content/images/grid.png")
+    var currObj
+    $(document).ready(function () {
+        dragEl();
+    })
+
+    function dragEl() {
+        $(".drag-el").draggable({
+            helper: "clone",
+            cursor: "cosshair",
+            classes: {
+                "ui-draggable": "highlight"
+            },
+            stop: function (event, ui) {
+                var elCoord = {};
+                elCoord.x = event.pageX;
+                elCoord.y = event.pageY;
+                var coord = getCoordinate(elCoord);
+                createElement(coord);
+
+            }
+        })
+    }
+    function getCoordinate(elCoord) {
+        var svgObj = $("#drawing>svg");
+        var svgCoord = {};
+        svgCoord.x = svgObj.offset().left;
+        svgCoord.y = svgObj.offset().top;
+        var coord = {};
+        coord.x = elCoord.x - svgCoord.x - 10;
+        coord.y = elCoord.y - svgCoord.y - 10;
+        coord.x = coord.x > 0 ? coord.x : 0;
+        coord.y = coord.y > 0 ? coord.y : 0;
+
+        return coord;
+    }
+    function createElement(coord) {
+        var obj = drawing.rect(50, 50).attr({
+            fill: '#f06',
+            'fill-opacity': 0.5,
+            stroke: '#000',
+            'stroke-width': 1
+        });
+
+        obj.addClass('road-element').draggable().selectize().move(coord.x, coord.y);
+        obj.resize();
+
+        obj.on("click", function (e) {
+            showElAttr(obj)
+        })
+        showElAttr(obj)
+    }
+
+    function showElAttr(el, type) {
+        currObj = el;
+        alert("ddd")
+        //$("input[name='id']").val(el.attr("id"))
+        //$("input[name='fill']").val(el.attr("fill"))
+        //$("input[name='width']").val(el.attr("width"))
+        //$("input[name='height']").val(el.attr("height"))
+        //$("input[name='view']").attr("readonly", "true")
+        //if (type == 3) {
+        //    $("input[name='view']").val(el.text())
+        //    $("input[name='view']").removeAttr("readonly")
+        //}
+        moveEl();
+    }
+    function moveEl() {
+        if (drawing.has(currObj)) {
+            document.addEventListener("keydown", function (ev) {
+                var ev = ev || window.event
+                switch (ev.keyCode) {
+                    case 37:
+                    case 100://左
+                        currObj.dx(-0.1)
+                        break;
+                    case 38:
+                    case 104://上
+                        currObj.dy(-0.1)
+                        break;
+                    case 39:
+                    case 102://右
+                        currObj.dx(0.1)
+                        break;
+                    case 40:
+                    case 98://下
+                        currObj.dy(0.1)
+                        break;
+                }
+            })
+        }
+    }
+    //function loadTemplate() {
+    //    drawing.clear();
+    //    if (res && res.length > 10) {
+    //        drawing.svg(res)
+    //        group = drawing.select('g.road-group').members[0] || drawing.group().addClass('road-group')
+
+    //    } else {
+    //        drawing.rect(384, 288).addClass("led")
+    //        group = drawing.group().addClass('road-group');
+    //    }
+    //    drawing.each(function (i, children) {
+    //        if (children[i].parent() && children[i].hasClass("road-element")) {
+    //            children[i].selectize().draggable().resize()
+    //        }
+
+    //    }, true);
+    //    unselect()
+    //}
+</script>
+
+@Scripts.Render("~/bundles/jqueryui")
